@@ -23,6 +23,32 @@ export async function getCars(search = "", page = 1) {
 }
 
 export async function getCarByPlate(plate: string) {
+  // First check if it's a user-added car from the local database
+  try {
+    const userCar = await sql`
+      SELECT plate, manufacturer, model, year
+      FROM user_cars
+      WHERE plate = ${plate}
+      LIMIT 1;
+    `;
+
+    if (userCar.length > 0) {
+      const car = userCar[0];
+      // Convert user car format to match the Car type structure
+      return {
+        mispar_rechev: car.plate,
+        tozeret_nm: car.manufacturer,
+        degem_nm: car.model,
+        shnat_yitzur: car.year,
+        isUserCar: true,
+      } as any;
+    }
+  } catch (err) {
+    console.error("Error checking user cars:", err);
+    // Continue to external API if local check fails
+  }
+
+  // Fall back to external API if not found in user_cars
   const res = await api.get("/datastore_search", {
     params: {
       resource_id: "053cea08-09bc-40ec-8f7a-156f0677aff3",
