@@ -49,7 +49,7 @@ export default async function CarPage({
       </div>
 
       <div className="bg-white border border-gray-200 rounded-2xl shadow-md p-6 sm:p-8 space-y-3 sm:space-y-4 transition hover:shadow-lg">
-        {Object.entries(car).map(([key, value]) => (
+        {Object.entries(car).filter(([key]) => key !== "isUserCar").map(([key, value]) => (
           <div
             key={key}
             className="flex justify-between items-start border-b border-gray-100 pb-3 last:border-0"
